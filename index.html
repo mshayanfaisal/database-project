@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <script type="" src="app.js"></script>
+    <style>
+      html {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+          Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+        font-size: 12px;
+      }
+
+      a:hover {
+        text-decoration-line: underline;
+      }
+
+      table,
+      th,
+      tr,
+      td {
+        border-collapse: collapse;
+        border: 1px solid #d3d3d3;
+      }
+
+      td {
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+
+      .active {
+        background-color: hsl(132, 95%, 76%);
+      }
+
+      h4 {
+        color: #336bff;
+      }
+
+      .line {
+        /* border: 1px solid #d3d3d3; */
+      }
+    </style>
+    <title>Alpine JS</title>
+  </head>
+
+  <body x-data="App()" x-init="getYears()" class="p-10">
+    <!-- <div class="ml-8 xxl:mt-0 xxl:ml-auto line">
+        <a href="#" @click="Reset()" class="">Reset</a>
+    </div> -->
+    <div style="display: flex; flex-direction: column">
+      <div class="ml-8 mt-8 xxl:mt-0 xxl:ml-auto line">
+        <a href="#" @click="Reset()" class="">Reset</a>
+        <h4 class="font-bold text-lg">Year</h4>
+        <!-- <pre x-text="JSON.stringify(years)"></pre> -->
+        <div style="display: flex; flex-wrap: wrap">
+          <template x-for="Yr in years">
+            <div
+              :class="{ 'active': Yr.year === params[`pYear`] }"
+              class="px-3"
+            >
+              <a
+                href="#"
+                x-text="Yr.year"
+                class=""
+                @click="getSemester(`${Yr.year}`)"
+              ></a>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div
+        class="ml-8 mt-8 xxl:mt-0 xxl:ml-auto line"
+        x-show="params.pYear !== ''"
+      >
+        <h4 class="font-bold text-lg">Semesters</h4>
+        <!-- <pre x-text="JSON.stringify(semesters)"></pre> -->
+        <div style="display: flex; flex-wrap: wrap">
+          <template x-for="Sem in semesters">
+            <div
+              :class="{ 'active': Sem.semester === params[`pSem`]}"
+              class="px-3"
+            >
+              <a
+                href="#"
+                x-text="Sem.semester"
+                class=""
+                @click="getBatch(`${Sem.semester}`)"
+              ></a>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div
+        class="ml-8 mt-8 xxl:mt-0 xxl:ml-auto line"
+        x-show="params.pSem !== ''"
+      >
+        <h4 class="font-bold text-lg">Batches</h4>
+        <!-- <pre x-text="JSON.stringify(batches)"></pre> -->
+        <div style="display: flex; flex-wrap: wrap">
+          <template x-for="Bat in batches">
+            <div
+              :class="{ 'active': Bat.class === params[`pBatch`] }"
+              class="px-3"
+            >
+              <a
+                href="#"
+                x-text="Bat.class"
+                class=""
+                @click="getClass(`${Bat.class}`)"
+              ></a>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div
+        class="ml-8 mt-8 xxl:mt-0 xxl:ml-auto line"
+        x-show="params.pBatch !== ''"
+      >
+        <h4 class="font-bold text-lg">Recaps</h4>
+        <!-- <pre x-text="JSON.stringify(batches)"></pre> -->
+        <div style="display: flex; flex-wrap: wrap">
+          <template x-for="Rc in recaps">
+            <div
+              :class="{ 'active': Rc.rid === Number(params[`pRecap`]) }"
+              class="px-3"
+            >
+              <a
+                href="#"
+                x-text="Rc.title"
+                class=""
+                @click="getRecap(`${Rc.rid}`)"
+              ></a>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div
+        class="ml-8 mt-8 xxl:mt-0 xxl:ml-auto line"
+        x-show="params.pRecap !== ''"
+      >
+        <h4 class="font-bold text-lg mb-2">Grade Report</h4>
+
+        <!-- Show loader while loading -->
+        <div x-show="students.length === 0">
+          <img src="images/loading.gif" alt="Loading..." class="h-6" />
+        </div>
+
+        <!-- Stats and Table -->
+        <div x-show="students.length !== 0">
+          <!-- Show aggregate stats (once) -->
+          <div class="mb-4">
+            <p>
+              <strong>Total Students:</strong>
+              <span x-text="students[0].total_students"></span>
+            </p>
+            <p>
+              <strong>Failed Students:</strong>
+              <span x-text="students[0].failed_students"></span>
+            </p>
+            <p>
+              <strong>Failure Percentage:</strong>
+              <span x-text="students[0].failure_percentage + '%'"></span>
+            </p>
+          </div>
+
+          <!-- Grade table -->
+          <table class="table-auto w-full border">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-4 py-2">S #</th>
+                <th class="px-4 py-2">Reg No</th>
+                <th class="px-4 py-2">Name</th>
+                <th class="px-4 py-2">Marks</th>
+                <th class="px-4 py-2">Grade</th>
+                <th class="px-4 py-2">GPA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="(Std, index) in students" :key="Std.regno">
+                <tr>
+                  <td class="border px-4 py-2" x-text="index + 1"></td>
+                  <td class="border px-4 py-2" x-text="Std.regno"></td>
+                  <td class="border px-4 py-2" x-text="Std.name"></td>
+                  <td class="border px-4 py-2" x-text="Std.total_marks"></td>
+                  <td class="border px-4 py-2" x-text="Std.grade"></td>
+                  <td class="border px-4 py-2" x-text="Std.gpa"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- <pre x-text="JSON.stringify({params, index}, null, 4)"></pre> -->
+    </div>
+  </body>
+</html>
+
+<!-- 
+
+{
+    "course_id": "BIO-101",
+    "title": "Intro. to Biology",
+    "dept_name": "Biology",
+    "credits": 4
+}
+
+-->
