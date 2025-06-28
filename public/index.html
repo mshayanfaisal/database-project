@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Alpine + Node</title>
+    <script
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+  </head>
+  <body class="p-4">
+    <h1 class="text-xl">Alpine.js + Node</h1>
+
+    <div
+      x-data="{ time: '', fetchTime() { 
+    fetch('/api/time')
+      .then(res => res.text())
+      .then(data => this.time = data)
+  }}"
+    >
+      <button
+        @click="fetchTime"
+        class="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        Get Server Time
+      </button>
+      <p x-text="time" class="mt-2 text-green-700"></p>
+    </div>
+  </body>
+</html>
