@@ -3,211 +3,289 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.tailwindcss.com"></script>
+
     <script
       defer
       src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
     ></script>
-    <script type="" src="app.js"></script>
+    <script src="app.js"></script>
+    <title>Recap Viewer</title>
+
     <style>
-      html {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
-          Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-        font-size: 12px;
+      :root {
+        --bg: #f3f4f6;
+        --card-bg: #ffffffcc;
+        --text: #1f2937;
+        --text-muted: #6b7280;
+        --primary: #6366f1;
+        --primary-dark: #4f46e5;
+        --border: #e5e7eb;
+        --hover: #eef2ff;
+        --radius: 12px;
       }
 
-      a:hover {
-        text-decoration-line: underline;
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
 
-      table,
-      th,
-      tr,
-      td {
-        border-collapse: collapse;
-        border: 1px solid #d3d3d3;
+      html,
+      body {
+        font-family: "Segoe UI", "Noto Sans", sans-serif;
+        font-size: 15px;
+        background: var(--bg);
+        color: var(--text);
       }
 
-      td {
-        margin-left: 5px;
-        margin-right: 5px;
+      body {
+        padding: 40px 30px;
+        max-width: 1200px;
+        margin: auto;
       }
 
-      .active {
-        background-color: hsl(132, 95%, 76%);
+      a {
+        text-decoration: none;
+        color: inherit;
       }
 
       h4 {
-        color: #336bff;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 12px;
       }
 
-      .line {
-        /* border: 1px solid #d3d3d3; */
+      .section {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        padding: 24px 28px;
+        margin-bottom: 30px;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+      }
+
+      .top-link {
+        text-align: right;
+        margin-bottom: 16px;
+      }
+
+      .top-link a {
+        font-weight: 500;
+        color: var(--text-muted);
+      }
+
+      .top-link a:hover {
+        color: var(--text);
+      }
+
+      .chip-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .chip {
+        padding: 8px 18px;
+        border-radius: 999px;
+        background: #f0f0f4;
+        cursor: pointer;
+        font-weight: 500;
+        transition: 0.3s ease;
+        border: 1px solid transparent;
+        color: #374151;
+      }
+
+      .chip:hover {
+        background: var(--hover);
+        border-color: var(--primary);
+        color: var(--primary-dark);
+      }
+
+      .chip.active {
+        background: var(--primary-dark);
+        color: white;
+        font-weight: 600;
+        border-color: var(--primary-dark);
+        box-shadow: 0 2px 6px rgba(99, 102, 241, 0.4);
+      }
+
+      .stats {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 20px;
+        background: #f9fafb;
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+
+      .stat {
+        font-weight: 500;
+      }
+
+      .loader {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .loader img {
+        height: 30px;
+        opacity: 0.6;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+      }
+
+      th,
+      td {
+        padding: 14px 18px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        background-color: #f9fafb;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+
+      tr:hover {
+        background-color: #f1f5f9;
+      }
+
+      @media (max-width: 768px) {
+        .chip-container {
+          flex-direction: column;
+        }
+
+        table,
+        th,
+        td {
+          font-size: 14px;
+        }
+
+        .section {
+          padding: 20px;
+        }
       }
     </style>
-    <title>Alpine JS</title>
   </head>
 
-  <body x-data="App()" x-init="getYears()" class="p-10">
-    <!-- <div class="ml-8 xxl:mt-0 xxl:ml-auto line">
-        <a href="#" @click="Reset()" class="">Reset</a>
-    </div> -->
-    <div style="display: flex; flex-direction: column">
-      <div class="ml-8 mt-8 xxl:mt-0 xxl:ml-auto line">
-        <a href="#" @click="Reset()" class="">Reset</a>
-        <h4 class="font-bold text-lg">Year</h4>
-        <!-- <pre x-text="JSON.stringify(years)"></pre> -->
-        <div style="display: flex; flex-wrap: wrap">
-          <template x-for="Yr in years">
-            <div
-              :class="{ 'active': Yr.year === params[`pYear`] }"
-              class="px-3"
-            >
-              <a
-                href="#"
-                x-text="Yr.year"
-                class=""
-                @click="getSemester(`${Yr.year}`)"
-              ></a>
-            </div>
-          </template>
-        </div>
-      </div>
-      <div
-        class="ml-8 mt-8 xxl:mt-0 xxl:ml-auto line"
-        x-show="params.pYear !== ''"
-      >
-        <h4 class="font-bold text-lg">Semesters</h4>
-        <!-- <pre x-text="JSON.stringify(semesters)"></pre> -->
-        <div style="display: flex; flex-wrap: wrap">
-          <template x-for="Sem in semesters">
-            <div
-              :class="{ 'active': Sem.semester === params[`pSem`]}"
-              class="px-3"
-            >
-              <a
-                href="#"
-                x-text="Sem.semester"
-                class=""
-                @click="getBatch(`${Sem.semester}`)"
-              ></a>
-            </div>
-          </template>
-        </div>
-      </div>
-      <div
-        class="ml-8 mt-8 xxl:mt-0 xxl:ml-auto line"
-        x-show="params.pSem !== ''"
-      >
-        <h4 class="font-bold text-lg">Batches</h4>
-        <!-- <pre x-text="JSON.stringify(batches)"></pre> -->
-        <div style="display: flex; flex-wrap: wrap">
-          <template x-for="Bat in batches">
-            <div
-              :class="{ 'active': Bat.class === params[`pBatch`] }"
-              class="px-3"
-            >
-              <a
-                href="#"
-                x-text="Bat.class"
-                class=""
-                @click="getClass(`${Bat.class}`)"
-              ></a>
-            </div>
-          </template>
-        </div>
-      </div>
-      <div
-        class="ml-8 mt-8 xxl:mt-0 xxl:ml-auto line"
-        x-show="params.pBatch !== ''"
-      >
-        <h4 class="font-bold text-lg">Recaps</h4>
-        <!-- <pre x-text="JSON.stringify(batches)"></pre> -->
-        <div style="display: flex; flex-wrap: wrap">
-          <template x-for="Rc in recaps">
-            <div
-              :class="{ 'active': Rc.rid === Number(params[`pRecap`]) }"
-              class="px-3"
-            >
-              <a
-                href="#"
-                x-text="Rc.title"
-                class=""
-                @click="getRecap(`${Rc.rid}`)"
-              ></a>
-            </div>
-          </template>
-        </div>
-      </div>
-      <div
-        class="ml-8 mt-8 xxl:mt-0 xxl:ml-auto line"
-        x-show="params.pRecap !== ''"
-      >
-        <h4 class="font-bold text-lg mb-2">Grade Report</h4>
+  <body x-data="App()" x-init="getYears()">
+    <div class="top-link">
+      <a href="#" @click="Reset()">Reset</a>
+    </div>
 
-        <!-- Show loader while loading -->
-        <div x-show="students.length === 0">
-          <img src="images/loading.gif" alt="Loading..." class="h-6" />
-        </div>
+    <div class="section">
+      <h4>Select Year</h4>
+      <div class="chip-container">
+        <template x-for="Yr in years">
+          <div
+            :class="['chip', Yr.year === params[`pYear`] ? 'active' : '']"
+            @click="getSemester(`${Yr.year}`)"
+            x-text="Yr.year"
+          ></div>
+        </template>
+      </div>
+    </div>
 
-        <!-- Stats and Table -->
-        <div x-show="students.length !== 0">
-          <!-- Show aggregate stats (once) -->
-          <div class="mb-4">
-            <p>
-              <strong>Total Students:</strong>
-              <span x-text="students[0].total_students"></span>
-            </p>
-            <p>
-              <strong>Failed Students:</strong>
-              <span x-text="students[0].failed_students"></span>
-            </p>
-            <p>
-              <strong>Failure Percentage:</strong>
-              <span x-text="students[0].failure_percentage + '%'"></span>
-            </p>
+    <div class="section" x-show="params.pYear !== ''">
+      <h4>Select Semester</h4>
+      <div class="chip-container">
+        <template x-for="Sem in semesters">
+          <div
+            :class="['chip', Sem.semester === params[`pSem`] ? 'active' : '']"
+            @click="getBatch(`${Sem.semester}`)"
+            x-text="Sem.semester"
+          ></div>
+        </template>
+      </div>
+    </div>
+
+    <div class="section" x-show="params.pSem !== ''">
+      <h4>Select Batch</h4>
+      <div class="chip-container">
+        <template x-for="Bat in batches">
+          <div
+            :class="['chip', Bat.class === params[`pBatch`] ? 'active' : '']"
+            @click="getClass(`${Bat.class}`)"
+            x-text="Bat.class"
+          ></div>
+        </template>
+      </div>
+    </div>
+
+    <div class="section" x-show="params.pBatch !== ''">
+      <h4>Select Recap</h4>
+      <div class="chip-container">
+        <template x-for="Rc in recaps">
+          <div
+            :class="['chip', Rc.rid === Number(params[`pRecap`]) ? 'active' : '']"
+            @click="getRecap(`${Rc.rid}`)"
+            x-text="Rc.title"
+          ></div>
+        </template>
+      </div>
+    </div>
+
+    <div class="section" x-show="params.pRecap !== ''">
+      <h4>Grade Report</h4>
+
+      <div class="loader" x-show="students.length === 0">
+        <img src="images/loading.gif" alt="Loading..." />
+      </div>
+
+      <div x-show="students.length !== 0">
+        <div class="stats">
+          <div class="stat">
+            <strong>Total Students:</strong>
+            <span x-text="students[0].total_students"></span>
           </div>
-
-          <!-- Grade table -->
-          <table class="table-auto w-full border">
-            <thead class="bg-gray-100">
-              <tr>
-                <th class="px-4 py-2">S #</th>
-                <th class="px-4 py-2">Reg No</th>
-                <th class="px-4 py-2">Name</th>
-                <th class="px-4 py-2">Marks</th>
-                <th class="px-4 py-2">Grade</th>
-                <th class="px-4 py-2">GPA</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template x-for="(Std, index) in students" :key="Std.regno">
-                <tr>
-                  <td class="border px-4 py-2" x-text="index + 1"></td>
-                  <td class="border px-4 py-2" x-text="Std.regno"></td>
-                  <td class="border px-4 py-2" x-text="Std.name"></td>
-                  <td class="border px-4 py-2" x-text="Std.total_marks"></td>
-                  <td class="border px-4 py-2" x-text="Std.grade"></td>
-                  <td class="border px-4 py-2" x-text="Std.gpa"></td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
+          <div class="stat">
+            <strong>Failed Students:</strong>
+            <span x-text="students[0].failed_students"></span>
+          </div>
+          <div class="stat">
+            <strong>Failure Percentage:</strong>
+            <span x-text="students[0].failure_percentage + '%'"></span>
+          </div>
         </div>
-      </div>
 
-      <!-- <pre x-text="JSON.stringify({params, index}, null, 4)"></pre> -->
+        <table>
+          <thead>
+            <tr>
+              <th>S #</th>
+              <th>Reg No</th>
+              <th>Name</th>
+              <th>Marks</th>
+              <th>Grade</th>
+              <th>GPA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="(Std, index) in students" :key="Std.regno">
+              <tr>
+                <td x-text="index + 1"></td>
+                <td x-text="Std.regno"></td>
+                <td x-text="Std.name"></td>
+                <td x-text="Std.total_marks"></td>
+                <td x-text="Std.grade"></td>
+                <td x-text="Std.gpa"></td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
     </div>
   </body>
 </html>
-
-<!-- 
-
-{
-    "course_id": "BIO-101",
-    "title": "Intro. to Biology",
-    "dept_name": "Biology",
-    "credits": 4
-}
-
--->
