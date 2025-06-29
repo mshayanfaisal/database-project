@@ -57,46 +57,62 @@ router.get("/recap/:rid", async (req, res) => {
     const { rid } = req.params;
 
     const query = await sql`
-        WITH student_totals AS (
-          SELECT
-            s.regno,
-            s.name,
-            r.cid,
-            SUM(m.marks) AS total_marks
-          FROM student s
-          JOIN marks m ON s.regno = m.regno
-          JOIN recap r ON m.rid = r.rid
-          WHERE r.rid = ${rid}
-          GROUP BY s.regno, s.name, r.cid
-        ),
-        student_grades AS (
-          SELECT
-            st.regno,
-            st.name,
-            st.cid,
-            st.total_marks,
-            g.grade,
-            g.gpa
-          FROM student_totals st
-          JOIN grade g ON st.total_marks BETWEEN g.start AND g."end"
-        ),
-        stats AS (
-          SELECT
-            COUNT(*) AS total_students,
-            COUNT(*) FILTER (WHERE gpa = 0) AS failed_students
-          FROM student_grades
-        ),
-        final_result AS (
-          SELECT
-            sg.*,
-            stats.total_students,
-            stats.failed_students,
-            ROUND(100.0 * stats.failed_students::decimal / stats.total_students, 2) AS failure_percentage
-          FROM student_grades sg, stats
-        )
-        SELECT * FROM final_result
-        ORDER BY gpa ASC, regno;
-      `;
+        SELECT 
+  sg.regno,
+  sg.name,
+  sg.cid,
+  sg.total_marks,
+  sg.grade,
+  sg.gpa,
+  stats.total_students,
+  stats.failed_students,
+  ROUND(100.0 * stats.failed_students::decimal / stats.total_students, 2) AS failure_percentage
+FROM (
+  SELECT 
+    st.regno,
+    st.name,
+    st.cid,
+    st.total_marks,
+    g.grade,
+    g.gpa
+  FROM (
+    SELECT 
+      s.regno,
+      s.name,
+      r.cid,
+      SUM(m.marks) AS total_marks
+    FROM student s
+    JOIN marks m ON s.regno = m.regno
+    JOIN recap r ON m.rid = r.rid
+    WHERE r.rid = ${rid}  -- <-- replace with your specific rid
+    GROUP BY s.regno, s.name, r.cid
+  ) st
+  JOIN grade g ON st.total_marks BETWEEN g.start AND g."end"
+) sg,
+(
+  SELECT 
+    COUNT(*) AS total_students,
+    COUNT(*) FILTER (WHERE gpa = 0) AS failed_students
+  FROM (
+    SELECT 
+      st.regno,
+      st.total_marks,
+      g.gpa
+    FROM (
+      SELECT 
+        s.regno,
+        SUM(m.marks) AS total_marks
+      FROM student s
+      JOIN marks m ON s.regno = m.regno
+      JOIN recap r ON m.rid = r.rid
+      WHERE r.rid = ${rid}
+      GROUP BY s.regno
+    ) st
+    JOIN grade g ON st.total_marks BETWEEN g.start AND g."end"
+  ) sub
+) stats
+ORDER BY sg.gpa ASC, sg.regno;
+`;
 
     res.status(200).json(query);
   } catch (err) {
