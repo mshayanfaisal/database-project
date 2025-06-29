@@ -36,6 +36,7 @@
         font-size: 15px;
         background: var(--bg);
         color: var(--text);
+        font-family: monospace;
       }
 
       body {
@@ -81,7 +82,10 @@
 
       .top-link a {
         font-weight: 500;
-        color: var(--text-muted);
+        color: #a22509;
+        border: 1px solid;
+        padding: 10px;
+        border-radius: 20px;
       }
 
       .top-link a:hover {
@@ -279,9 +283,10 @@
         <table>
           <thead>
             <tr>
-              <th>S #</th>
+              <th>S#</th>
               <th>Reg No</th>
-              <th>Name</th>
+              <th>Recap ID</th>
+              <th>Student Name</th>
               <th>Marks</th>
               <th>Grade</th>
               <th>GPA</th>
@@ -292,6 +297,7 @@
               <tr>
                 <td x-text="index + 1"></td>
                 <td x-text="Std.regno"></td>
+                <td x-text="Std.cid"></td>
                 <td x-text="Std.name"></td>
                 <td x-text="Std.total_marks"></td>
                 <td x-text="Std.grade"></td>
