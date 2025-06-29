@@ -9,7 +9,7 @@
       src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
     ></script>
     <script src="app.js"></script>
-    <title>Recap Viewer</title>
+    <title>Student Recap Viewer – Grade & Failure Report</title>
 
     <style>
       :root {
@@ -47,6 +47,13 @@
       a {
         text-decoration: none;
         color: inherit;
+      }
+
+      h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        margin-bottom: 6px;
       }
 
       h4 {
@@ -182,6 +189,14 @@
   </head>
 
   <body x-data="App()" x-init="getYears()">
+    <!-- Header with Project Title -->
+    <header class="mb-8">
+      <h1>Student Recap Viewer</h1>
+      <p style="font-size: 1rem; color: var(--text-muted)">
+        View academic performance, failure rates, and grade reports.
+      </p>
+    </header>
+
     <div class="top-link">
       <a href="#" @click="Reset()">Reset</a>
     </div>
