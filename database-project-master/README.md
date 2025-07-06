@@ -32,11 +32,13 @@ Effortlessly view and analyze student academic performance with a clean and intu
 git clone https://github.com/mshayanfaisal/database-project.git
 
 ### 2. Install Dependencies
-```npm init
+```bash
+npm init
 npm install
 
 ### 3. Run the App Locally
-```npm run dev
+```bash
+npm run dev
 
 🖥️ Deployment
 Hosted on <a href="https://database-project-iota.vercel.app/">Vercel</a>
