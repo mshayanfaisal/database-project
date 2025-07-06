@@ -45,3 +45,8 @@ Hosted on <a href="https://database-project-iota.vercel.app/">Vercel</a>
 ![image](https://github.com/user-attachments/assets/3dc56b49-df2b-47de-93f1-f010b34b9e60)
 ![image](https://github.com/user-attachments/assets/a94c4d1a-7309-4c09-9027-e35574e37f62)
 
+🤝 Contributing
+Contributions, issues and feature requests are welcome! Feel free to check issues page.
+
+🌐 Live Demo
+🔗 https://database-project-iota.vercel.app
