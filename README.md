@@ -41,9 +41,7 @@ npm run dev
 🖥️ Deployment
 Hosted on <a href="https://database-project-iota.vercel.app/">Vercel</a>
 
-![image](https://github.com/user-attachments/assets/c939b16d-dd5d-46a9-9b8c-a48ec3e7e187)
-![image](https://github.com/user-attachments/assets/3dc56b49-df2b-47de-93f1-f010b34b9e60)
-![image](https://github.com/user-attachments/assets/a94c4d1a-7309-4c09-9027-e35574e37f62)
+<img src="https://github.com/user-attachments/assets/c939b16d-dd5d-46a9-9b8c-a48ec3e7e187" width="600" alt="Screenshot 1" /> <br/> <img src="https://github.com/user-attachments/assets/3dc56b49-df2b-47de-93f1-f010b34b9e60" width="600" alt="Screenshot 2" /> <br/> <img src="https://github.com/user-attachments/assets/a94c4d1a-7309-4c09-9027-e35574e37f62" width="600" alt="Screenshot 3" />
 
 🤝 Contributing
 Contributions, issues and feature requests are welcome! Feel free to check issues page.
